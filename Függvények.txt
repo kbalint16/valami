@@ -1,0 +1,217 @@
+átlag:
+emp<-function(x){
+	s=0;
+	for(i in 1:length(x)){
+	s=s+x[i]
+	}
+	return(s/length(x))
+	}
+Ez a R nyelvben írt egy egyszerű függvény, amely az általad adott vektor átlagát számolja ki.
+
+A függvény neve emp, és egy bemeneti paramétert (x) vár, amely egy numerikus vektor. A függvényben egy változó (s) inicializálása és nullával való beállítása után egy ciklus fut végig a vektor elemein (1:length(x)). A ciklusmagban minden elem hozzáadódik a s változóhoz. Végül a függvény visszatér a vektor elemeinek összegének és az elemek számának hányadosával, amely az átlagot jelenti.
+
+Tehát ha például a következőképpen hívod meg a függvényt: emp(c(1, 2, 3, 4, 5)), akkor visszatér az átlagával, amely 3.
+-------------------------------------------------------------------
+korrigált empirikus szórás:
+kesz<-function(x){
+	s=0;
+	for(i in 1:length(x)){
+	s=s+(x[i]-emp(x))^2
+	}
+	return(s/(length(x)-1))
+	}
+
+Ez a R nyelven írt kód egy függvényt definiál, amely kiszámítja a korrigált empirikus szórást, vagyis azt az értéket, amely az adatok szórását közelíti. A függvény neve "kesz".
+
+A függvény egy bemeneti paramétert vár, amely egy vektor, vagyis egy adatsor. A függvény a következő lépéseket hajtja végre:
+
+Létrehoz egy változót, "s", amelyet inicializál 0 értékkel.
+Végrehajt egy ciklust az adatsoron, amely minden elemre elvégez egy műveletet.
+A ciklusmagban számítja az adott elem és az adatsor átlaga különbségének négyzetét, majd hozzáadja az "s" változóhoz.
+Visszaadja az "s" változó értékét, amelyet az adatsor hosszának eggyel csökkentett értékével oszt el.
+Az első lépésben inicializált "s" változó az adatsor összegét fogja tartalmazni a ciklus végeztével. Az utolsó lépésben a függvény ezt az összeget az adatsor méretének egy kisebb értékével osztja el, hogy a szórást közelítő értéket kapjuk.
+
+Fontos megjegyezni, hogy a szórást szokásosan az adatsor méretével egyenlő nevezővel osztjuk el, azonban ha csak az adatsor egy részére vonatkozó szórásra vagyunk kíváncsiak, akkor az adatsor méretének eggyel kisebb értékével osztjuk el a szummát, hogy az a szórást közelítő értéket adjon. Ez az eggyel kisebb nevező az ún. korrekciós faktor, amelyet a fenti kódban is alkalmaznak.
+-------------------------------------------------------------------
+rnorm(100)-> 100 elemű tömb random normál számokkal feltöltve
+-------------------------------------------------------------------
+Illeszkedésvizsgálat:
+illeszkedes = function(K,N){
+	n = length(K);
+	chi = qchisq(.95, (n-1));
+	sum = 0;
+	for(x in 1:n)
+	{
+		sum = sum + ((K[x]-N*(1/n))^2)/(N*(1/n));
+	}
+	cat('Szabadsági fok: ',n-1,'\n');
+	cat('Kiszámolt érték: ',sum,'\n');
+	cat('Viszonyított érték: ',chi,'\n');
+
+	if(sum < chi)
+	{
+		cat('Elfogadjuk a hipotézist.\n');
+	} else
+	{
+		cat('Nem fogadjuk el.\n');
+	}
+}
+Ez a kód egy illeszkedésvizsgálatot hajt végre, hogy meghatározza, hogy az adott adathalmaz illeszkedik-e egy előre definiált eloszláshoz vagy sem. Az illeszkedésvizsgálat a Chi-négyzet eloszlást használja az adatok és az eloszlás közötti eltérések mértékének kiszámítására.
+
+A függvény két bemeneti paramétert vár: K és N. K az adathalmaz, amelyet az illeszkedésvizsgálatra használunk, és N az eloszlás mintájában szereplő elemek száma. Az illeszkedési teszt két hipotézist tesz fel: nullhipotézis (H0), hogy az adathalmaz az előre definiált eloszláshoz illeszkedik, és alternatív hipotézis (H1), hogy az adathalmaz nem illeszkedik az előre definiált eloszláshoz.
+
+Az illeszkedésvizsgálat során a függvény kiszámítja a szabadsági fokokat, majd az illeszkedési teszt statisztikáját, amelyet a kiszámított érték és a viszonyított érték összehasonlításával határoz meg. Ha a kiszámított érték kisebb, mint a viszonyított érték, akkor elfogadják a nullhipotézist, és az adathalmaz illeszkedik az előre definiált eloszláshoz. Ha a kiszámított érték nagyobb, mint a viszonyított érték, akkor elutasítják a nullhipotézist, és az adathalmaz nem illeszkedik az előre definiált eloszláshoz.
+
+A kód a cat() függvényt használja a kimeneti üzenetek kiírására a konzolra, és a qchisq() függvényt használja a Chi-négyzet eloszlás kritikus értékének meghatározására. A for ciklus segítségével a függvény kiszámítja a kiszámított értéket, majd összehasonlítja a viszonyított értékkel, és kiírja az eredményt a konzolra.
+------------------------------------------------------------------
+Homogenitás:
+F = c(7,3,4,300,24,63,41,87,7,36,52)
+G = c(1,1,1,1,1,1,1,1,1,1,1)
+homogenitas <- function(F,G){
+    n = 0
+    m = 0
+    for(i in 1:length(F)){
+        n = n + F[i]
+    }
+    for(i in 1:length(F)){
+        m = m + G[i]
+    }
+ 
+    s = 0
+    for(i in 1:length(F)){
+        s = s + (F[i]/n - G[i]/m)^2 / (F[i] + G[i])
+    } 
+    if(s < 16.0){
+        return('Elfogadjuk')
+    }
+    else{
+        return('Nem fogadjuk el')
+    }
+}
+Ez a kód a homogenitás tesztet valósítja meg R nyelven. A homogenitás teszt azt vizsgálja, hogy két minta azonos-e a változó eloszlásában.
+
+A kód két vektort kap bemenetként, a F-et és a G-t, majd kiszámítja az összes elemük összegét, majd az elemek számát. Az első for ciklus az F összegét számolja ki, a második a G összegét. Az s változóval aztán kiszámítja a teszt statisztikát.
+
+
+Ahol $O_i$ az i-edik osztály megfigyelt gyakorisága (vagy az i-edik osztályba eső elemek száma), $E_i$ az i-edik osztály várható értéke (az i-edik osztályra vonatkozó elvárt gyakoriság).
+-----------------------------------------------------------------
+Függetlenség vizsgálat:
+fuggetlenseg = function(F)
+{
+	Frow = rowSums(F);
+	Fcol = colSums(F);
+	n = sum(Frow);
+	cat('Az n értéke: ',n,'\n');
+
+	sum = 0;
+
+	for(i in 1:nrow(F))
+	{
+		for(j in 1:ncol(F))
+		{
+			sum = sum + ((F[i,j] - ((Frow[i]*Fcol[j]))/n)^2)/(Frow[i]*Fcol[j]);
+		}
+	}
+	sum = sum * n;
+	cat('A kiszámított érték: ',sum,'\n');
+
+	df = (nrow(F) - 1) * (ncol(F) - 1);
+	cat('A szabadsági fok: ',df,'\n');
+	chi = qchisq(.95, df);
+	cat('Viszonyított érték (95%-os konfidenciaintervallum esetén): ',chi,'\n');
+	
+	if(sum < chi)
+	{
+		cat('Elfogadjuk a hipotézist.\n');
+	} else
+	{
+		cat('Nem fogadjuk el a hipotézist.\n');
+	}
+}
+Ez a kód R nyelven írva egy függetlenség vizsgálatot végez. A függetlenség vizsgálat célja annak eldöntése, hogy két változó között van-e szignifikáns kapcsolat vagy sem.
+
+A kódban egy adattáblát adunk meg a F változóban, amelyben az adatok cellákba vannak rendezve. Az Frow változóba a sorok összegeit, a Fcol változóba pedig az oszlopok összegeit tároljuk el. Az n változóba a cellák összegét tesszük.
+
+Ezután kiszámítjuk a vizsgálati statisztikát, amely a Pearson-féle $\chi^2$-próbastatisztikára épül. Végig iterálunk az összes cellán, és kiszámítjuk a cella és az elvárt érték közötti négyzetes eltérést, amelyet az elvárt érték a cella sorában és oszlopában lévő arányok szorzataként határozunk meg.
+
+A kiszámított vizsgálati statisztikát összeszorozzuk az n-nel, majd meghatározzuk a szabadsági fokot (df), amelyet a tábla sorainak száma mínusz egy és az oszlopok száma mínusz egy szorzataként határozunk meg. Ezután meghatározzuk a 95%-os konfidenciaintervallumhoz tartozó $\chi^2$-értéket, és összehasonlítjuk a vizsgálati statisztikával.
+--------------------------------------------------------------------------------------------------
+Lineáris regresszió:
+x <- c(1, 2, 3, 4, 5)
+y <- c(3,5,7,9,11)
+linreg <- function(x,y){
+	n <- length(x)
+   	x_mean <- mean(x)
+   	y_mean <- mean(y)
+   	SS_xy <- sum(x * y) - n * x_mean * y_mean
+   	SS_xx <- sum(x^2) - n * x_mean^2
+   	beta_1 <- SS_xy / SS_xx
+   	beta_0 <- y_mean - beta_1 * x_mean
+   	return(list(beta_0 = beta_0, beta_1 = beta_1))
+ }
+Ez a kód egy lineáris regressziót hajt végre két változó között. Az x és y vektorok az adatokat tartalmazzák. A linreg() függvény számítja a lineáris regressziós egyenlet paramétereit: az intercept-et (vagyis a függő változó állandó értékét) és a slope-ot (vagyis a függő változó változását a független változó változása szerint).
+
+A kód első részében meghatározza a minta méretét (n), és kiszámítja az x és y változók átlagát (x_mean, y_mean). Az SS_xy és az SS_xx változók a regressziós egyenlet kiszámításához szükségesek. Az SS_xy a kovariancia, az SS_xx pedig a független változó szórása. Ezekből a változókból a slope és az intercept értékei számítódnak ki, és egy lista formájában adja vissza a függvény a két értéket.
+-----------------------------------------------------------------------------------------------------
+Nem lineáris regresszió:
+nem_linearis_regresszio <- function(x, y){
+	u = x
+	v = log(y)
+	mean_u = 0
+	n = length(u);
+	for(i in 1:n)
+	{
+	mean_u = mean_u + u[i];
+	}
+	mean_u = mean_u / n;
+	mean_v = 0;
+	for(i in 1:n)
+	{
+	mean_v = mean_v + v[i];
+	}
+	mean_v = mean_v / n;
+	a = 0;
+	b=0;
+	sum1=0;
+	sum2=0;
+	for(i in 1:n)
+	{
+	sum1 = sum1 + ((u[i]-mean_u)*(v[i]-mean_v));
+	}
+	for(i in 1:n){
+	sum2 = sum2 + ((u[i]-mean_u)^2);
+	}
+	a = sum1 / sum2;
+	b = mean_v - (a*mean_u)
+	cat("Az a értéke: ",a,"\n");
+	cat("A b értéke: ",b,"\n");
+}
+
+Ez a kód egy nem lineáris regressziót implementál. A regresszió modellje az y = a * ln(x) + b összefüggésre épül, ahol a és b a modell paraméterei, x és y pedig a bemeneti adatok.
+
+Az első lépés az adatok előkészítése, azaz a bemeneti x és y adatokat az u és v változókba menti, valamint a v adatokra a természetes logaritmus függvényt alkalmazza a log() függvénnyel.
+
+Ezután kiszámítja az u és v átlagértékét, majd a lineáris regresszióhoz hasonlóan meghatározza az a és b paramétereket a minta korrelációs együtthatója és átlagos értékei alapján.
+
+Végül az a és b értékét kiírja a képernyőre a cat() függvénnyel.
+--------------------------------------------------------------------------------------------
+u-próba
+u_prob <- function(x, m, s)
+{
+	n = length(x);
+	u = (emp(x)-m)/(s/sqrt(n));
+	
+	if(abs(u) < 1.96)
+	{
+		cat("ELFOGADJUK \n");
+	} else
+	{
+		cat("NEM FOGADJUK EL \n");
+	}
+}
+
+
+
+
+
+
